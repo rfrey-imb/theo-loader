@@ -28,7 +28,7 @@
   "homepage": "https://github.com/Autodesk/theo-loader#readme",
   "peerDependencies": {
     "theo": "^8.1.5",
-    "webpack": "^3.7.1"
+    "webpack": "^4.0.0"
   },
   "devDependencies": {
     "babel-cli": "^6.24.1",
@@ -51,7 +51,7 @@
     "rimraf": "^2.5.2",
     "should": "^13.1.2",
     "theo": "^8.1.5",
-    "webpack": "^3.7.1"
+    "webpack": "^4.0.0"
   },
   "dependencies": {
     "loader-utils": "^1.1.0"
