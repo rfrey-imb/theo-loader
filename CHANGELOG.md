@@ -4,6 +4,21 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
+## [5.0.0] (2020)
+
+Updated to:
+- Node 12+.
+- Webpack 4.
+- Theo (v8.1.5).
+
+Updated some other dependencies to latest (as of 2020)
+for compatibility with the above
+
+## [4.0.0] (2017)
+
+Updated to Webpack 3.
+Updated some other dependencies (2017).
+
 ## [3.0.0]
 
 The following changes and additions were made to configuring theo-loader:
