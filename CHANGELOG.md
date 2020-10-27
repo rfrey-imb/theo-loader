@@ -6,6 +6,8 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 
 ## [5.0.0] (2020)
 
+WIP WORK IN PROGRESS - I can't reccommend you use this fork (or Theo at all honestly)
+
 Updated to:
 - Node 12+.
 - Webpack 4.
@@ -13,6 +15,30 @@ Updated to:
 
 Updated some other dependencies to latest (as of 2020)
 for compatibility with the above
+
+*Rewrote the Loader, Minimally Tested*
+- Now supports loading JSON5 and YAML via importing Theo's own file loading functions. `require(theo!./tokens.yaml);`
+
+Wrote a couple new tests with jest and memfs following webpack guidance https://webpack.js.org/contribute/writing-a-loader/#testing
+
+### Breaking Changes and Migration:
+
+- Options format changed.
+  - See suggested webpack query or configs in README.md.
+  - Schema documented in [./src/options.js]()
+
+- If you are using a `format` that is not js/json,
+  they will no longer be converted to a module
+  - "common.js", "module.js", "raw", and "json" should work mostly as before
+    - you may need a `raw-loader!` prefix if your file extension is json and target is javascript.
+  - "custom-properties.css", "sass", "less" and so forth
+    will require you to do something with the text they return.
+    - ⚠️ import from within css not working - I had some misplaced hope
+      to be able to use this raw css text with css-loader or sass-loader
+      but those do not seem to use webpack loaders to resolve imports.
+    - If you do want Theo's css output to be wrapped into a js
+      module you can recreate that behavior by
+      chaining `to-string-loader` or `css-loader` in front of `theo-loader`. You could chain `style-loader` to write to document or `file-loader` to write to disk. UNTESTED.
 
 ## [4.0.0] (2017)
 

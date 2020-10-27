@@ -1,0 +1,9 @@
+{
+  "props": {
+    "color-green": {
+      "value": "#93e865",
+      "type": "color",
+      "category": "color"
+    }
+  }
+}

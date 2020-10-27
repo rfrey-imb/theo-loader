@@ -1,75 +1,55 @@
-# theo loader for webpack
+# Theo Loader for Webpack
 
-[![Greenkeeper badge](https://badges.greenkeeper.io/Autodesk/theo-loader.svg)](https://greenkeeper.io/)
+**WORK IN PROGRESS BRANCH - DO NOT USE**
 
 A webpack loader that transforms Design Tokens files using [Salesforce's theo](https://github.com/salesforce-ux/theo).
 
-[![Build Status](https://img.shields.io/travis/Autodesk/theo-loader/master.svg)](https://travis-ci.org/Autodesk/theo-loader)
-[![NPM Version](https://img.shields.io/npm/v/theo-loader.svg)](https://www.npmjs.com/package/theo-loader)
-[![Dependencies](https://david-dm.org/Autodesk/theo-loader.svg)](https://david-dm.org/Autodesk/theo-loader)
-
-## Installation
+## Installation and Setup
 
 ```bash
 npm install --save-dev webpack theo theo-loader
 ```
 
-__Note:__ [npm](https://npmjs.com) deprecated
-[auto-installing of peerDependencies](https://github.com/npm/npm/issues/6565) from npm@3, so required peer dependencies like theo and webpack must be listed explicitly in your `package.json`.
+theo and webpack are peer dependencies
+so must be installed into your package.json
 
 ## Usage
 
-`props.json`
+
+`tokens/props.json`
 ```json
 {
   "aliases": {
-    "WHITE": "#FFFFFF",
-    "LINK_WATER": "#F4F6F9"
+    "light-blue": "#BEDFF1"
   },
   "props": {
-    "COLOR_BACKGROUND": {
-      "value": "{!LINK_WATER}",
-      "comment": "Default background color for the whole app."
-    },
-    "COLOR_BACKGROUND_ALT": {
-      "value": "{!WHITE}",
-      "comment": "Second default background color for the app."
+    "color-link": {
+      "value": "{!light-blue}"
     }
   },
   "global": {
     "type": "color",
-    "category": "background"
+    "category": "color"
   }
 }
 ```
 
+### Use an Inline Loader
+
 ``` javascript
-import designTokens from 'theo-loader!./props.json'
-// => {
-//  COLOR_BACKGROUND: "rgb(244, 246, 249)",
-//  COLOR_BACKGROUND_ALT: "rgb(255, 255, 255)"
-// }
+import designTokens from 'theo!./tokens/props.json'
+// designTokens = { colorLink: "rgb(190 223 241)" }
 ```
 
 [Documentation: Using loaders](http://webpack.github.io/docs/using-loaders.html)
 
-## Formats and Transforms
 
-The loader uses the `web` transform and `common.js` format by default. You can specify another transform or format in the query parameters:
+### ..._or_ Add a Webpack Loader Rule
 
-```javascript
-import designTokens from 'theo-loader?{"transform":{"type":"web"},"format":{"type":"scss"}!./props.json';
-// => "$color-background: rgb(244, 246, 249);\n$color-background-alt: rgb(255, 255, 255);"
-```
-
-or you can use the shorthand:
-
-```javascript
-import designTokens from 'theo-loader?transform=web&format=scss!./props.json';
-// => "$color-background: rgb(244, 246, 249);\n$color-background-alt: rgb(255, 255, 255);"
-```
-
-You can specify other options to pass to theo via the `LoaderOptionsPlugin` in your webpack configuration:
+Rules are suggested by webpack over inline loaders,
+though for files that need to be imported differently
+in different contexts, like our tokens, the inline loaders
+can be more useful.
 
 `webpack.config.js`
 ```javascript
@@ -78,49 +58,55 @@ module.exports = {
   module: {
     rules: [
       {
-        test: /\.json$/,
+        /* matches any json, json5, yaml, or yml file under a tokens path or including tokens in the name. */
+        test: /tokens.*\.(json5?|ya?ml)$/,
         loader: "theo-loader"
+        // you can pass options as well
+        // options will be shared across all token imports
+        /* e.g. :
+        options: {
+            transform: 'web', // e.g. ios, android,
+            format: {
+                type: 'module.js', // output modules instead of commonjs
+            }
+        }
+        */
       }
     ]
   },
-
-  plugins: [
-    new webpack.LoaderOptionsPlugin({
-      options: {
-        theo: {
-          // These options will be passed to Theo in all instances of theo-loader
-          transform: {
-            type: 'web'
-          },
-
-          // `getOptions` will be called per import
-          // `prevOptions` will be a merged object of the options specified
-          // above, as well as any passed to the loader via query string
-          getOptions: (prevOptions) => {
-            let newOptions = prevOptions;
-
-            const formatOptions = (prevOptions && prevOptions.format) || {};
-            const formatType = format.type;
-
-            if (formatType === 'scss') {
-              newOptions = {
-                ...prevOptions,
-                format: {
-                  ...formatOptions,
-                  // SCSS variables will be named by applying 'PREFIX_' to the
-                  // front of the token name
-                  propsMap: prop => prop.update('name', name => `PREFIX_${name}`)
-                },
-              };
-            }
-
-            return newOptions;
-          }
-        }
-      }
-    })
-  ]
 };
+```
+
+``` javascript
+import designTokens from './tokens/props.json'
+// designTokens will be { colorLink: "rgb(190 223 241)" }
+```
+
+## Formats and Transforms
+
+The loader uses the `web` transform and `common.js` format by default.
+
+When using non-js formats (e.g. when not raw, json, common.js, modules.js)
+be aware you need to chain with a loader to handle strings if requiring from in javascript.
+
+```javascript
+import designTokensScss from 'to-string!theo?format=scss!./tokens/props.json?'
+// designTokensScss = "$colorLink: rgb(190 223 241)"
+// notice we chained to-string-loader https://github.com/gajus/to-string-loader
+// in order to make the scss output consumable in javascript
+```
+
+You don't need a string loader when importing into a matching non-javascript
+context like within css (via css-loader).
+
+#### From CSS (or SASS, LESS, etc):
+```css
+@import 'theo?format=custom-properties.css!./tokens/props.json';
+/*
+:root {
+  --color-link: rgb(190 223 241);
+}
+*/
 ```
 
 See the [theo documentation](https://github.com/salesforce-ux/theo) for more information about the Theo options format.
@@ -140,7 +126,6 @@ theo.registerValueTransform(
 );
 
 module.exports = {
-  ...
   module: {
     rules: [
       {
@@ -149,16 +134,5 @@ module.exports = {
       }
     ]
   },
-
-  plugins: {
-    new webpack.LoaderOptionsPlugin({
-      options: {
-        theo: {
-          // Configure theo-loader here
-          ...
-        }
-      }
-    })
-  }
 }
 ```

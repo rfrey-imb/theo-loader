@@ -1,0 +1,17 @@
+{
+  "aliases": {
+    "light-blue": "#BEDFF1"
+  },
+  "props": {
+    "color-link": {
+      "value": "{!light-blue}"
+    }
+  },
+  "global": {
+    "type": "color",
+    "category": "color"
+  },
+  "imports": [
+    "./nested/colors-lv2.json"
+  ]
+}

@@ -1,0 +1,11 @@
+{
+  "props": {
+    "space_base": {
+      "value": "20px"
+    }
+  },
+  "global": {
+    "type": "number",
+    "category": "space"
+  }
+}
