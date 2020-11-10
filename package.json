@@ -1,5 +1,5 @@
 {
-  "name": "@rfrey-imb/theo-loader",
+  "name": "theo-loader",
   "version": "5.0.0",
   "description": "A webpack loader that transforms Design Tokens files using Salesforce's theo",
   "license": "Apache-2.0",
