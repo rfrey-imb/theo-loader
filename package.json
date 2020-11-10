@@ -9,7 +9,7 @@
     "lint:js": "eslint .",
     "test": "npm run lint:js && npm run test:js",
     "build": "babel src --out-dir dist",
-    "preinstall": "npm run build"
+    "postinstall": "npm run build"
   },
   "repository": {
     "type": "git",
