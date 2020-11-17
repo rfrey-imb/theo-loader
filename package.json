@@ -1,6 +1,6 @@
 {
   "name": "theo-loader",
-  "version": "5.0.1",
+  "version": "5.0.2",
   "description": "A webpack loader that transforms Design Tokens files using Salesforce's theo",
   "license": "Apache-2.0",
   "main": "dist/index.js",
@@ -8,8 +8,7 @@
     "test:js": "jest",
     "lint:js": "eslint .",
     "test": "npm run lint:js && npm run test:js",
-    "build": "babel src --out-dir dist",
-    "prepare": "npm run build"
+    "build": "babel src --out-dir dist"
   },
   "repository": {
     "type": "git",
@@ -34,7 +33,7 @@
   },
   "homepage": "https://github.com/Autodesk/theo-loader#readme",
   "peerDependencies": {
-    "theo": "^8.1.5",
+    "theo": "https://github.com/rfrey-imb/theo#v9.0.0",
     "webpack": "^4.0.0"
   },
   "devDependencies": {
